@@ -1,6 +1,8 @@
 package com.gal.project.screens;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -14,8 +16,11 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.gal.project.R;
+import com.gal.project.models.Event;
+import com.gal.project.models.User;
 import com.gal.project.services.AuthenticationService;
 import com.gal.project.services.DatabaseService;
+import com.gal.project.utils.SharedPreferencesUtil;
 
 public class AddNewEvent extends AppCompatActivity implements View.OnClickListener {
 
@@ -40,9 +45,26 @@ public class AddNewEvent extends AppCompatActivity implements View.OnClickListen
         databaseService = DatabaseService.getInstance();
 
 
-
         initViews();
 
+        String uid = authenticationService.getCurrentUserId();
+
+
+        databaseService.getUser(uid, new DatabaseService.DatabaseCallback<com.gal.project.models.User>() {
+            @Override
+            public void onCompleted(com.gal.project.models.User u) {
+                user = u;
+                Log.d("TAG", "onCompleted: User data retrieved successfully");
+
+
+            }
+
+            @Override
+            public void onFailed(Exception e) {
+
+            }
+
+        });
     }
     private void initViews() {
         etName = findViewById(R.id.etEventName);
@@ -97,14 +119,49 @@ public class AddNewEvent extends AppCompatActivity implements View.OnClickListen
                     Toast.makeText(AddNewEvent.this, "כתובת לא תקינה", Toast.LENGTH_LONG).show();
                     isVaild = false;
                 }
-                if (etMaxMembers.length() < 1) {
-                    Toast.makeText(AddNewEvent.this, "מספר משתתפים קטן מידי", Toast.LENGTH_LONG).show();
-                    isVaild = false;
+
+                if (isVaild) {
+
+                    /// generate a new id for the food
+                    String id = databaseService.generateEventId();
+
+
+                    // יצירת אירוע חדש
+                    Event newEvent = new Event(
+                            id, // כאן אתה יכול לשים מזהה ייחודי
+                            user, // המשתמש המנהל
+                            name, // שם האירוע
+                            spType.getSelectedItem().toString(), // סוג האירוע
+                            date, // תאריך
+                            time, // זמן
+                            spCity.getSelectedItem().toString(), // עיר
+                            address, // כתובת
+                            0.0, // latitude (תוכל להוסיף קבלת ערך אם יש לך מיקום גיאוגרפי)
+                            0.0, // longitude
+                            Integer.parseInt(members), // מקסימום משתתפים
+                            null, // רשימת המשתתפים, יכול להיות ריקה בהתחלה
+                            descroption, // תיאור
+                            "active" // סטטוס, לדוגמה "active"
+                    );
+
+                    // שמירה במסד הנתונים
+                    databaseService.createEvent(newEvent, new DatabaseService.DatabaseCallback<Void>() {
+                        @Override
+                        public void onCompleted(Void result) {
+                            Toast.makeText(AddNewEvent.this, "האירוע נוצר בהצלחה!", Toast.LENGTH_LONG).show();
+                            // חזור למסך הראשי או למקום אחר
+                            finish(); // או להתחיל Activity חדש אם צריך
+                        }
+
+                        @Override
+                        public void onFailed(Exception e) {
+                            Toast.makeText(AddNewEvent.this, "הייתה שגיאה ביצירת האירוע", Toast.LENGTH_LONG).show();
+                        }
+                    });
                 }
-                if (etMaxMembers.length() > 100) {
-                    Toast.makeText(AddNewEvent.this, "מספר המשתתפים גודל מידי", Toast.LENGTH_LONG).show();
-                    isVaild = false;
-                }
+
+
+
 
 
 

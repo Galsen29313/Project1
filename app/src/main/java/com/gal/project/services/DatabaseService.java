@@ -5,7 +5,7 @@ import android.util.Log;
 import androidx.annotation.Nullable;
 
 
-
+import com.gal.project.models.Event;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
@@ -27,6 +27,19 @@ public class DatabaseService {
     /// tag for logging
     /// @see Log
     private static final String TAG = "DatabaseService";
+
+    public void createEvent(Event newEvent, DatabaseCallback<Void> callback) {
+        // במקרה ואין ID לאירוע, ניצור אחד
+        String eventId = newEvent.getId();
+        if (eventId == null || eventId.isEmpty()) {
+            eventId = generateEventId();  // צור מזהה חדש אם לא סופק
+            newEvent.setId(eventId);  // הגדר את המזהה החדש לאירוע
+        }
+
+        // שמור את האירוע ב-Firebase תחת הנתיב "events/{eventId}"
+        writeData("events/" + eventId, newEvent, callback);
+    }
+
 
     /// callback interface for database operations
     /// @param <T> the type of the object to return
@@ -76,16 +89,22 @@ public class DatabaseService {
     /// @return void
     /// @see DatabaseCallback
     private void writeData(@NotNull final String path, @NotNull final Object data, final @Nullable DatabaseCallback<Void> callback) {
+        Log.d(TAG, "Writing data to path: " + path);  // לוג לפני שמירת הנתונים
         databaseReference.child(path).setValue(data).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
-                if (callback == null) return;
-                callback.onCompleted(task.getResult());
+                Log.d(TAG, "Data written successfully to path: " + path);  // לוג אם השמירה הצליחה
+                if (callback != null) {
+                    callback.onCompleted(task.getResult());
+                }
             } else {
-                if (callback == null) return;
-                callback.onFailed(task.getException());
+                Log.e(TAG, "Failed to write data to path: " + path, task.getException());  // לוג במקרה של שגיאה
+                if (callback != null) {
+                    callback.onFailed(task.getException());
+                }
             }
         });
     }
+
 
     /// read data from the database at a specific path
     /// @param path the path to read the data from
@@ -190,14 +209,6 @@ public class DatabaseService {
         return generateNewId("events");
     }
 
-    /// generate a new id for a new cart in the database
-    /// @return a new id for the cart
-    /// @see #generateNewId(String)
-    /// @see Cart
-    public String generateCartId() {
-        return generateNewId("carts");
-    }
-
     /// get all the events from the database
     /// @param callback the callback to call when the operation is completed
     ///              the callback will receive a list of event objects
@@ -224,6 +235,28 @@ public class DatabaseService {
             callback.onCompleted(events);
         });
     }
+    public void getEventsByCategory(@NotNull final String category, @NotNull final DatabaseCallback<List<Event>> callback) {
+        Query query = databaseReference.child("events").orderByChild("category").equalTo(category);
+
+        query.get().addOnCompleteListener(task -> {
+            if (!task.isSuccessful()) {
+                Log.e(TAG, "Error getting events by category", task.getException());
+                callback.onFailed(task.getException());
+                return;
+            }
+
+            List<Event> events = new ArrayList<>();
+            task.getResult().getChildren().forEach(dataSnapshot -> {
+                Event event = dataSnapshot.getValue(Event.class);
+                if (event != null) {
+                    events.add(event);
+                }
+            });
+
+            callback.onCompleted(events);
+        });
+    }
+
 
     /// get all the users from the database
     /// @param callback the callback to call when the operation is completed
@@ -251,4 +284,5 @@ public class DatabaseService {
             callback.onCompleted(users);
         });
     }
+
 }

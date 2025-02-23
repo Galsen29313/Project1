@@ -50,5 +50,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             Intent golog=new Intent(getApplicationContext(), Login.class);
             startActivity(golog);
         }
+        if(v==btnAbout){
+            Intent goAbo=new Intent(getApplicationContext(), Info.class);
+            startActivity(goAbo);
+        }
     }
 }

@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,7 +16,8 @@ import com.gal.project.R;
 
 public class After extends AppCompatActivity implements View.OnClickListener {
 
-    Button addEvent,searchEvent,information,profile;
+
+    ImageButton ibprofile,ibaddEvent,ibsearchEvent,ibinformation;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -26,31 +28,31 @@ public class After extends AppCompatActivity implements View.OnClickListener {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        addEvent=findViewById(R.id.addE);
-        addEvent.setOnClickListener(this);
-        searchEvent=findViewById(R.id.searchE);
-        searchEvent.setOnClickListener(this);
-        information=findViewById(R.id.info);
-        information.setOnClickListener(this);
-        profile=findViewById(R.id.account);
-        profile.setOnClickListener(this);
+        ibaddEvent=findViewById(R.id.ibaddE);
+        ibaddEvent.setOnClickListener(this);
+        ibsearchEvent=findViewById(R.id.ibsearchE);
+        ibsearchEvent.setOnClickListener(this);
+        ibinformation=findViewById(R.id.ibinfo);
+        ibinformation.setOnClickListener(this);
+        ibprofile=findViewById(R.id.ibAccount);
+        ibprofile.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View v) {
-        if (v==addEvent) {
+        if (v==ibaddEvent) {
             Intent go = new Intent(getApplicationContext(), AddNewEvent.class);
             startActivity(go);
         }
-        if(v==searchEvent) {
-            Intent go = new Intent(getApplicationContext(), SearchEvent.class);
+        if(v==ibsearchEvent) {
+            Intent go = new Intent(getApplicationContext(), SearchEventsActivity.class);
             startActivity(go);
         }
-        if(v==information) {
+        if(v==ibinformation) {
             Intent go = new Intent(getApplicationContext(), Info.class);
             startActivity(go);
         }
-        if(v==profile) {
+        if(v==ibprofile) {
 
 
             Intent go = new Intent(getApplicationContext(), Profile.class);

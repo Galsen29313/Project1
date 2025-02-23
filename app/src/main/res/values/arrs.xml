@@ -2,6 +2,7 @@
 <resources>
 
     <string-array name="arrTYpe">
+        <item>סוג ספורט</item>
         <item>כדורגל</item>
         <item>כדורסל</item>
         <item>טניס</item>
@@ -34,6 +35,7 @@
     </string-array>
 
     <string-array name="arrCity">
+        <item>עיר</item>
         <item>ירושלים</item>
         <item>תל אביב-יפו</item>
         <item>חיפה</item>

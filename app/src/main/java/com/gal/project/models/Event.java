@@ -149,6 +149,12 @@ public class Event {
     public void setStatus(String status) {
         this.status = status;
     }
+    // בתוך מחלקת Event
+    public void addParticipant(User user) {
+        if (joined != null && !joined.contains(user) && joined.size() < maxJoin) {
+            joined.add(user); // הוסף את המשתמש לרשימה
+        }
+    }
 
     @Override
     public String toString() {

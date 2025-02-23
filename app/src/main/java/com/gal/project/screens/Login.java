@@ -55,11 +55,6 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
             etEmail.setText(user.getEmail());
             etPassword.setText(user.getPassword());
         }
-
-
-
-
-
         btnLog.setOnClickListener(this);
     }
 

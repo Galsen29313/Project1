@@ -1,58 +1,71 @@
-package com.gal.project.adapters;
+    package com.gal.project.adapters;
 
-import android.app.Activity;
-import android.content.Context;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.TextView;
+    import android.view.LayoutInflater;
+    import android.view.View;
+    import android.view.ViewGroup;
+    import android.widget.TextView;
+    import androidx.recyclerview.widget.RecyclerView;
 
+    import com.gal.project.R;
+    import com.gal.project.models.Event;
 
-import com.gal.project.R;
+    import java.util.List;
 
-import java.util.List;
+    public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHolder> {
+        private List<Event> eventList;
 
+        // Constructor to initialize the list
+        public EventAdapter(List<Event> eventList) {
+            this.eventList = eventList;
+        }
 
-public class EventAdapter  <P> extends ArrayAdapter<com.gal.project.models.Event> {
-    Context context;
-    List<com.gal.project.models.Event> objects;
+        @Override
+        public EventViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            // Inflate the layout for each list item
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.raw_event, parent, false);
+            return new EventViewHolder(view);
+        }
 
-    public  EventAdapter(Context context, int resource, int textViewResourceId, List<com.gal.project.models.Event> objects) {
-        super(context, resource, textViewResourceId, objects);
+        @Override
+        public void onBindViewHolder(EventViewHolder holder, int position) {
+            Event event = eventList.get(position);
 
-        this.context = context;
-        this.objects = objects;
+            // Bind the data to the views
+            holder.tvEventName.setText(event.getName());
+            holder.tvEventDate.setText(event.getDate());
+            holder.tvEventTime.setText(event.getTime());
+            holder.tvEventCat.setText(event.getType());
+            holder.tvEventCity.setText(event.getCity());
 
+            if(event.getJoined()==null)
+                    holder.tvEventJoined.setText(1+"/"+event.getMaxJoin());
+         else    holder.tvEventJoined.setText((event.getJoined().size()+1)+"/"+event.getMaxJoin());
+
+        }
+
+        @Override
+        public int getItemCount() {
+            return eventList.size();
+        }
+
+        // Update the list when filtering
+        public void updateList(List<Event> newEventList) {
+            eventList = newEventList;
+            notifyDataSetChanged();
+        }
+
+        // ViewHolder class to hold references to the views in the layout
+        public static class EventViewHolder extends RecyclerView.ViewHolder {
+            TextView tvEventName, tvEventDate, tvEventTime, tvEventCat, tvEventCity, tvEventJoined;
+
+            public EventViewHolder(View itemView) {
+                super(itemView);
+                tvEventName = itemView.findViewById(R.id.tvEventName);
+                tvEventDate = itemView.findViewById(R.id.tvEventDate);
+                tvEventTime = itemView.findViewById(R.id.tvEventTime);
+                tvEventCat = itemView.findViewById(R.id.tvEventCat);
+                tvEventCity = itemView.findViewById(R.id.tvEventCity);
+                tvEventJoined = itemView.findViewById(R.id.tvEventJoinedNe);
+            }
+        }
     }
-
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-
-        LayoutInflater layoutInflater = ((Activity)context).getLayoutInflater();
-        View view = layoutInflater.inflate(R.layout.raw_event, parent, false);
-
-        TextView tvEventName = (TextView)view.findViewById(R.id.tvEventName);
-        TextView tvEventDate = (TextView)view.findViewById(R.id.tvEventDate);
-
-        TextView tvEventTime = (TextView)view.findViewById(R.id.tvEventTime);
-        TextView tvEventCat = (TextView)view.findViewById(R.id.tvEventCat);
-
-        TextView tvEventCity = (TextView)view.findViewById(R.id.tvEventCity);
-        TextView tvEventJoined = (TextView)view.findViewById(R.id.tvEventJoinedNe);
-
-
-
-
-        com.gal.project.models.Event temp = objects.get(position);
-        tvEventName.setText(temp.getName()+"");
-        tvEventDate.setText(temp.getDate()+"");
-        tvEventTime.setText(temp.getTime()+"");
-        tvEventCat.setText(temp.getType()+"");
-        tvEventCity.setText(temp.getCity()+"");
-        tvEventJoined.setText(temp.getJoined()+"");
-
-        return view;
-    }
-
-}
