@@ -10,7 +10,7 @@
     <Button
         android:id="@+id/btnRegister"
         android:layout_width="0dp"
-        android:layout_height="55dp"
+        android:layout_height="54dp"
 
 
         android:layout_marginEnd="207dp"
@@ -25,20 +25,22 @@
     <Button
         android:id="@+id/btnLogin"
         android:layout_width="220dp"
-        android:layout_height="55dp"
+        android:layout_height="54dp"
         android:background="@color/black"
         android:text="התחבר"
         android:textColor="@color/white"
         android:textSize="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvTitle" />
+        app:layout_constraintTop_toBottomOf="@+id/tvTitle"
+        app:layout_constraintVertical_bias="1.0" />
 
     <Button
         android:id="@+id/btnAbout"
         android:layout_width="0dp"
-        android:layout_height="55dp"
+        android:layout_height="54dp"
         android:background="@color/black"
         android:text="אודות"
         android:textColor="@color/white"
@@ -59,5 +61,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
